@@ -1,0 +1,9 @@
+streamlit==1.38.0
+pandas>=2.3.0
+plotly==5.24.1
+wordcloud==1.9.3
+matplotlib==3.9.2
+# KoNLPy/JPype는 선택 설치(Cloud에서는 생략). 로컬 필요 시 아래 주석 해제
+# konlpy==0.6.0
+# JPype1==1.5.0
+
