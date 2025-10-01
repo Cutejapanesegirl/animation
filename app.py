@@ -35,7 +35,7 @@ st.sidebar.markdown(
 # --- 데이터 로드 함수 ---
 @st.cache_data
 def load_data(file_uploader):
-    """파일 업로더를 통해 데이터를 로드하거나, 업로드된 파일이 없으면 로컬 CSV 또는 예시 데이터를 생성합니다."""
+    """파일 업로더를 통해 데이터를 로드하거나, 업로드된 파일이 없으면 로컬 CSV 또는 예시 데이터를 생성합니다."""                                     
     if file_uploader:
         try:
             if file_uploader.name.endswith('.csv'):

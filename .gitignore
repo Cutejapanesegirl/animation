@@ -1,0 +1,28 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+.venv*/
+.env*/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Streamlit
+.streamlit/secrets.toml
+
+# Data/cache
+.streamlit/
+.cache/
+*.sqlite3
+@feedback-data.csv
+
+# Notebooks
+.ipynb_checkpoints/
+
