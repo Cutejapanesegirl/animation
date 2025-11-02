@@ -359,54 +359,23 @@ if df is not None:
                 st.subheader("🎯 애니메이션 추천")
                 st.markdown("본 애니메이션 기반으로 **비슷한 취향의 사람들이 좋아하는** 애니메이션을 추천해드립니다.")
                 
-                # 추천 모드 선택
-                recommendation_mode = st.radio(
-                    "추천 방식 선택",
-                    ["본 애니메이션들 기반 추천", "특정 애니메이션 유사 추천"],
-                    horizontal=True
-                )
-                
-                if recommendation_mode == "본 애니메이션들 기반 추천":
-                    # 사용자가 선택한 애니메이션들 기반 추천
-                    if selected_products:
-                        recommendations = get_user_based_recommendations(
-                            df_filtered, 
-                            selected_products, 
-                            top_n=5
-                        )
-                        if recommendations:
-                            st.success(f"✨ **{', '.join(selected_products)}** 기반 추천 결과")
-                            for idx, rec in enumerate(recommendations, 1):
-                                similarity_score = rec['similarity']
-                                animation_name = rec['animation']
-                                st.markdown(f"**{idx}. {animation_name}** (유사도: {similarity_score:.2%})")
-                        else:
-                            st.info("추천할 애니메이션이 충분하지 않습니다. 더 많은 데이터가 필요합니다.")
-                    else:
-                        st.info("추천을 위해 최소 1개 이상의 애니메이션을 선택해주세요.")
-                
-                else:
-                    # 특정 애니메이션 유사 추천
-                    target_animations_for_rec = st.selectbox(
-                        "기준 애니메이션 선택",
-                        options=unique_products,
-                        help="이 애니메이션과 유사한 애니메이션을 찾아드립니다."
+                # 애니메이션 기반 추천
+                if selected_products:
+                    recommendations = get_user_based_recommendations(
+                        df_filtered, 
+                        selected_products, 
+                        top_n=5
                     )
-                    
-                    if st.button("유사 애니메이션 찾기"):
-                        recommendations = get_similar_animations(
-                            target_animations_for_rec,
-                            df_filtered,
-                            top_n=5
-                        )
-                        if recommendations:
-                            st.success(f"✨ **{target_animations_for_rec}**와(과) 유사한 애니메이션")
-                            for idx, rec in enumerate(recommendations, 1):
-                                similarity_score = rec['similarity']
-                                animation_name = rec['animation']
-                                st.markdown(f"**{idx}. {animation_name}** (유사도: {similarity_score:.2%})")
-                        else:
-                            st.info("유사한 애니메이션을 찾을 수 없습니다. 더 많은 데이터가 필요합니다.")
+                    if recommendations:
+                        st.success(f"✨ **{', '.join(selected_products)}** 기반 추천 결과")
+                        for idx, rec in enumerate(recommendations, 1):
+                            similarity_score = rec['similarity']
+                            animation_name = rec['animation']
+                            st.markdown(f"**{idx}. {animation_name}** (유사도: {similarity_score:.2%})")
+                    else:
+                        st.info("추천할 애니메이션이 충분하지 않습니다. 더 많은 데이터가 필요합니다.")
+                else:
+                    st.info("추천을 위해 최소 1개 이상의 애니메이션을 선택해주세요.")
     else:
         st.info("분석 버튼을 눌러주세요.")
 
