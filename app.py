@@ -18,35 +18,23 @@ except Exception:
     _okt = None
 
 # --- 기본 설정 ---
-st.set_page_config(layout="centered", page_title="애니메이션 피드백 분석기")
+st.set_page_config(layout="centered", page_title="맞춤 애니메이션 추천")
 
 # --- 앱 제목 및 소개 ---
 st.markdown("""
 <div style="text-align: center;">
-    <h1>애니메이션 피드백 분석기</h1>
-    <p>사용자 피드백 데이터를 기반으로 <strong>감성 분포</strong>와 <strong>주요 키워드</strong>를 분석하고 시각화합니다.</p>
+    <h1>맞춤 애니메이션 추천</h1>
+    <p>사용자 피드백 데이터를 기반으로 <strong>평점을 매기고</strong> <strong>주요 키워드</strong>를 분석하고 시각화합니다.</p>
 </div>
 """, unsafe_allow_html=True)
 st.markdown("---")
 
 # --- 사이드바: 파일 업로드 및 필터 ---
-st.sidebar.markdown("""
-<div style="padding: 10px; background-color: #f0f2f6; border-radius: 10px;">
-    <h3>파일 업로드 및 설정</h3>
-</div>
-""", unsafe_allow_html=True)
-
 uploaded_file = st.sidebar.file_uploader(
     "CSV 또는 Excel 파일 업로드", 
     type=["csv", "xlsx"],
     help="분석할 데이터 파일을 업로드하세요."
 )
-
-st.sidebar.markdown("""
-<div style="margin-top: 10px; font-size: 0.9em; color: #666;">
-    <p><strong>참고:</strong> 파일을 업로드하지 않으면 로컬의 'feedback-data.csv' 또는 예시 데이터로 분석을 시작합니다.</p>
-</div>
-""", unsafe_allow_html=True)
 
 # --- 데이터 로드 함수 ---
 @st.cache_data
@@ -68,7 +56,7 @@ def load_data(file_uploader):
         if os.path.exists(default_path):
             try:
                 df = pd.read_csv(default_path)
-                st.info("업로드된 파일이 없어 로컬 'feedback-data.csv'를 사용합니다.")
+                # No message will be shown
                 return df
             except Exception as e:
                 st.warning(f"로컬 CSV를 읽는 중 오류가 발생했습니다: {e}. 예시 데이터를 사용합니다.")
