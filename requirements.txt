@@ -10,6 +10,9 @@ pandas>=2.3.0
 plotly==5.24.1
 wordcloud==1.9.3
 matplotlib==3.9.2
+# 추천 알고리즘을 위한 라이브러리
+scikit-learn>=1.3.0
+numpy>=1.24.0
 # KoNLPy/JPype는 선택 설치(Cloud에서는 생략). 로컬 필요 시 아래 주석 해제
 # konlpy==0.6.0
 # JPype1==1.5.0
