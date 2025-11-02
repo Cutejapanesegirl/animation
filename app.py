@@ -29,37 +29,18 @@ st.markdown("""
 """, unsafe_allow_html=True)
 st.markdown("---")
 
-# --- 사이드바: 파일 업로드 및 필터 ---
-uploaded_file = st.sidebar.file_uploader(
-    "CSV 또는 Excel 파일 업로드", 
-    type=["csv", "xlsx"],
-    help="분석할 데이터 파일을 업로드하세요."
-)
-
 # --- 데이터 로드 함수 ---
 @st.cache_data
-def load_data(file_uploader):
-    """파일 업로더를 통해 데이터를 로드하거나, 업로드된 파일이 없으면 로컬 CSV 또는 예시 데이터를 생성합니다."""                                     
-    if file_uploader:
+def load_data():
+    """로컬 CSV 또는 예시 데이터를 로드합니다."""
+    # 로컬 기본 CSV 경로 확인
+    default_path = os.path.join(os.getcwd(), "@feedback-data.csv")
+    if os.path.exists(default_path):
         try:
-            if file_uploader.name.endswith('.csv'):
-                df = pd.read_csv(file_uploader)
-            else:
-                df = pd.read_excel(file_uploader)
+            df = pd.read_csv(default_path)
             return df
         except Exception as e:
-            st.error(f"파일을 읽는 중 오류가 발생했습니다: {e}")
-            return None
-    else:
-        # 로컬 기본 CSV 경로 확인
-        default_path = os.path.join(os.getcwd(), "@feedback-data.csv")
-        if os.path.exists(default_path):
-            try:
-                df = pd.read_csv(default_path)
-                # No message will be shown
-                return df
-            except Exception as e:
-                st.warning(f"로컬 CSV를 읽는 중 오류가 발생했습니다: {e}. 예시 데이터를 사용합니다.")
+            st.warning(f"로컬 CSV를 읽는 중 오류가 발생했습니다: {e}. 예시 데이터를 사용합니다.")
         # 예시 데이터 생성 (실제 애니메이션 이름과 장르 키워드 포함)
         example_data = {
             'date': pd.to_datetime(['2024-04-01', '2024-04-02', '2024-04-03', '2024-04-04', '2024-04-05',
@@ -262,7 +243,7 @@ def get_user_based_recommendations(df, target_animations, top_n=5):
         return []
 
 # --- 메인 앱 로직 ---
-df = load_data(uploaded_file)
+df = load_data()
 
 if df is not None:
     # 제품명 필터만 유지
