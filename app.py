@@ -196,17 +196,36 @@ def get_similar_animations(target_animation, df, top_n=3):
         st.warning(f"추천 생성 중 오류 발생: {e}")
         return []
 
-def get_user_based_recommendations(df, target_animations, top_n=3):
+def get_user_based_recommendations(df, target_animations, top_n=5):
     """사용자가 본 애니메이션 기반으로 추천 (사용자 기반 협업 필터링)"""
     try:
+        # 기본 인기 애니메이션 목록 (데이터가 부족할 때 사용)
+        popular_anime = [
+            {'animation': '진격의 거인', 'similarity': 0.95},
+            {'animation': '귀멸의 칼날', 'similarity': 0.93},
+            {'animation': '주술회전', 'similarity': 0.90},
+            {'animation': '스파이 패밀리', 'similarity': 0.88},
+            {'animation': '원펀맨', 'similarity': 0.85},
+            {'animation': '나의 히어로 아카데미아', 'similarity': 0.83},
+            {'animation': '전생했더니 슬라임이었던 건에 대하여', 'similarity': 0.82},
+            {'animation': '약속의 네버랜드', 'similarity': 0.80},
+            {'animation': '도쿄 리벤저스', 'similarity': 0.78},
+            {'animation': '블루 락', 'similarity': 0.75},
+            {'animation': '체인소 맨', 'similarity': 0.73},
+            {'animation': '스파이X패밀리', 'similarity': 0.70},
+            {'animation': '블리치: 천년혈전편', 'similarity': 0.68},
+            {'animation': '마기아 레코드', 'similarity': 0.65}
+        ]
+        
         matrix = create_user_animation_matrix(df)
         
+        # 데이터가 충분하지 않은 경우 기본 추천 반환
         if matrix.empty or len(matrix.index) < 2:
-            return []
+            return popular_anime[:top_n]
         
         available_animations = [a for a in target_animations if a in matrix.index]
         if not available_animations:
-            return []
+            return popular_anime[:top_n]
         
         user_preferences = matrix.loc[available_animations].mean(axis=0)
         user_vector = user_preferences.values.reshape(1, -1)
@@ -220,6 +239,19 @@ def get_user_based_recommendations(df, target_animations, top_n=3):
         recommendations = similarity_df[
             ~similarity_df['animation'].isin(target_animations)
         ].nlargest(top_n, 'similarity')
+        
+        # 결과가 충분하지 않으면 기본 추천과 병합
+        if len(recommendations) < top_n:
+            existing_anime = set(rec['animation'] for rec in recommendations.to_dict('records'))
+            additional_recs = [
+                rec for rec in popular_anime 
+                if rec['animation'] not in existing_anime and 
+                   rec['animation'] not in target_animations
+            ][:top_n - len(recommendations)]
+            
+            if additional_recs:
+                additional_df = pd.DataFrame(additional_recs)
+                recommendations = pd.concat([recommendations, additional_df])
         
         return recommendations.to_dict('records')
     
@@ -260,7 +292,6 @@ if df is not None:
             st.warning("선택된 필터에 해당하는 데이터가 없습니다. 필터를 조정해 주세요.")
         else:
             with st.spinner('피드백을 분석 중입니다... 🚀'):
-                st.balloons()
 
                 # 주요 결과 시각화
                 col1, col2 = st.columns(2)
