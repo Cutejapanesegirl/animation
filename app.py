@@ -265,21 +265,8 @@ def get_user_based_recommendations(df, target_animations, top_n=5):
 df = load_data(uploaded_file)
 
 if df is not None:
-    st.sidebar.subheader("데이터 필터링")
-    
-    # 날짜 필터
-    df['date'] = pd.to_datetime(df['date'])
-    min_date = df['date'].min()
-    max_date = df['date'].max()
-    date_range = st.sidebar.slider(
-        "기간 선택",
-        min_value=min_date.date(),
-        max_value=max_date.date(),
-        value=(min_date.date(), max_date.date())
-    )
-    df_filtered = df[(df['date'].dt.date >= date_range[0]) & (df['date'].dt.date <= date_range[1])]
-
-    # 제품명 필터
+    # 제품명 필터만 유지
+    df_filtered = df.copy()
     if 'product' in df.columns:
         unique_products = df['product'].unique().tolist()
         selected_products = st.sidebar.multiselect(
